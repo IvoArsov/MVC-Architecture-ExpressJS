@@ -14,6 +14,8 @@ app.engine('handlebars', handlebars({
 }))
 app.set('view engine', 'handlebars')
 
+app.use(express.static('public'))
+
 app.get('/', (req, res) => {
     mongoose 
         .connect('mongodb://localhost:27017/generictemplate') //TODO: change db name by base of project
