@@ -1,30 +1,12 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const handlebars = require('express-handlebars')
-
-mongoose.Promise = global.Promise
-
 let env = process.env.NODE_ENV || 'development'
-let port = process.env.PORT || 1337
 
-let app = express()
+let settings = require('./server/config/settings')[env]
 
-app.engine('handlebars', handlebars({
-    defaultLayout: 'main'
-}))
-app.set('view engine', 'handlebars')
+const app = require('express')()
 
-app.use(express.static('public'))
+require('./server/config/database')(settings)
+require('./server/config/express')(app)
+require('./server/config/routes')(app)
 
-app.get('/', (req, res) => {
-    mongoose 
-        .connect('mongodb://localhost:27017/generictemplate') //TODO: change db name by base of project
-        .then(() => {
-            console.log('MongoDB ready!')
-
-            res.render('index')
-        })     
-})
-
-app.listen(port)
-console.log(`Server listening at port ${port}`)
+app.listen(settings.port)
+console.log(`Server listening at port ${settings.port}`)
