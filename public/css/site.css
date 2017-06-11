@@ -14,7 +14,3 @@ h1{
 .menu li{
     display: inline-block;
 }
-
-.menu li:after{
-    content: "/00a0";
-}
