@@ -4,35 +4,31 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const passport = require('passport')
 const handlebars = require('express-handlebars')
-const encryption = require('../utilities/encryption')
 
 module.exports = (app) => {
-    app.engine('handlebars', handlebars({
+  app.engine('handlebars', handlebars({
     defaultLayout: 'main'
-    }))
-    app.set('view engine', 'handlebars')
+  }))
+  app.set('view engine', 'handlebars')
+  app.use(cookieParser())
+  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(session({
+    secret: 'neshto-taino!@#$%',
+    resave: false,
+    saveUninitialized: false
+  }))
+  app.use(passport.initialize())
+  app.use(passport.session())
 
-    let saltForSession = encryption.generateSalt()
+  app.use((req, res, next) => {
+    if (req.user) {
+      res.locals.currentUser = req.user
+    }
 
-    app.use(cookieParser())
-    app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(session({
-      secret: saltForSession,
-      resave: false,
-      saveUninitialized: false
-    }))
-    app.use(passport.initialize())
-    app.use(passport.session())
+    next()
+  })
 
-    //app.use((req, res, next) => {
-    //  if (req.user) {
-    //    res.locals.currentUser = req.user
-    //  }
-    //
-    //  next()
-    //})
+  app.use(express.static('public'))
 
-    app.use(express.static('public'))
-
-    console.log('Express ready!')
+  console.log('Express ready!')
 }

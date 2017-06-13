@@ -10,4 +10,4 @@ require('./server/config/routes')(app)
 require('./server/config/passport')()
 
 app.listen(settings.port)
-console.log(`Server listening at port ${settings.port}`)
+console.log(`Server listening on port ${settings.port}`)
